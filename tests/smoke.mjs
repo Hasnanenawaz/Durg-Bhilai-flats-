@@ -1,5 +1,5 @@
 // End-to-end smoke test against a running server in dev-OTP mode.
-// Usage: ALLOW_DEV_OTP=true ADMIN_PHONES=9876543210 npm start   then   node tests/smoke.mjs
+// Usage: SESSION_SECRET=<random 16+ chars> ALLOW_DEV_OTP=true ADMIN_PHONES=9876543210 npm start   then   node tests/smoke.mjs
 const BASE = process.env.BASE || 'http://localhost:3000';
 const ADMIN = process.env.ADMIN_PHONE || '9876543210';
 let pass = 0, fail = 0;
