@@ -55,6 +55,7 @@ create table if not exists public.properties (
   status          text not null default 'pending' check (status in ('pending','approved','hidden','rented','rejected')),
   featured        boolean not null default false,
   verified        boolean not null default false,
+  admin_hidden    boolean not null default false,   -- hidden by an admin; the owner can't relist it
   approved_at     timestamptz,
   views           integer not null default 0,
   created_at      timestamptz not null default now(),
@@ -62,6 +63,8 @@ create table if not exists public.properties (
 );
 create index if not exists properties_search_idx on public.properties (status, city, listing_type, rent);
 create index if not exists properties_owner_idx on public.properties (owner_id);
+-- For databases created before admin_hidden existed:
+alter table public.properties add column if not exists admin_hidden boolean not null default false;
 
 -- ── Inquiries: logged every time a guest reveals an owner's number ──
 create table if not exists public.inquiries (
@@ -76,6 +79,7 @@ create table if not exists public.inquiries (
   created_at      timestamptz not null default now()
 );
 create index if not exists inquiries_owner_idx on public.inquiries (owner_id, created_at desc);
+create index if not exists inquiries_guest_idx on public.inquiries (guest_id, created_at desc);
 
 -- ── Saved / shortlisted places ──
 create table if not exists public.favorites (

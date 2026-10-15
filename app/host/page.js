@@ -50,7 +50,7 @@ export default async function HostHome({ searchParams }) {
       {props.length ? (
         <div className="panel">
           {props.map((p) => {
-            const [cls, label] = STATUS[p.status] || ['', p.status];
+            const [cls, label] = p.admin_hidden ? ['badge-red', 'Hidden by our team'] : STATUS[p.status] || ['', p.status];
             return (
               <div key={p.id} className="hrow">
                 <div>

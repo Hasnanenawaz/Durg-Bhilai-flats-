@@ -1,21 +1,37 @@
 import Link from 'next/link';
 import { db } from '@/lib/db';
-import { shortDate } from '@/lib/site';
+import { requireAdmin } from '@/lib/auth';
 
-export default async function AdminBlog() {
-  const posts = await db.find('blogs', { order: ['updated_at', false], limit: 500 });
+export default async function AdminOverview() {
+  await requireAdmin();
+  const weekAgo = new Date(Date.now() - 7 * 864e5).toISOString();
+  const [users, newLeads, newUsers, live, pending, reports, inquiries, posts] = await Promise.all([
+    db.count('users'),
+    db.count('users', { eq: { lead_status: 'new' } }),
+    db.count('users', { gte: { created_at: weekAgo } }),
+    db.count('properties', { eq: { status: 'approved' } }),
+    db.count('properties', { eq: { status: 'pending' } }),
+    db.count('reports', { eq: { resolved: false } }),
+    db.count('inquiries', { gte: { created_at: weekAgo } }),
+    db.count('blogs', { eq: { status: 'published' } }),
+  ]);
+  const cards = [
+    [users, 'users signed up', '/admin/users'],
+    [newUsers, 'new users this week', '/admin/users'],
+    [newLeads, 'leads not called yet', '/admin/users?status=new'],
+    [live, 'live listings', '/admin/listings?status=approved'],
+    [pending, 'listings waiting for review', '/admin/listings?status=pending'],
+    [reports, 'open reports', '/admin/reports'],
+    [inquiries, 'inquiries this week', '/admin/inquiries'],
+    [posts, 'published posts', '/admin/blog'],
+  ];
   return (
     <>
-      <div className="dash-head"><div><span className="eyebrow">Blog</span><h1>Posts</h1></div><Link className="btn btn-primary" href="/admin/blog/new">+ New post</Link></div>
-      <div className="panel">
-        {posts.map((p) => (
-          <div key={p.id} className="hrow">
-            <div><Link href={`/admin/blog/${p.id}`} style={{ fontWeight: 600 }}>{p.title}</Link><div className="xs muted">/blog/{p.slug}</div></div>
-            <span className={`badge ${p.status === 'published' ? 'badge-green' : ''}`}>{p.status}</span>
-            <span className="xs muted">{p.published_at ? `Published ${shortDate(p.published_at)}` : `Edited ${shortDate(p.updated_at)}`}</span>
-          </div>
+      <div className="dash-head"><div><span className="eyebrow">Admin</span><h1>Overview</h1></div></div>
+      <div className="stats">
+        {cards.map(([n, label, href]) => (
+          <Link key={label} href={href} className="stat" style={{ textDecoration: 'none' }}><b>{n}</b><span>{label}</span></Link>
         ))}
-        {!posts.length && <div className="panel-body muted small">No posts yet. Write your first renting guide.</div>}
       </div>
     </>
   );

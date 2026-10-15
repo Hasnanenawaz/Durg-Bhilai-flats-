@@ -113,6 +113,29 @@ const users2 = await (await admin('/admin/users')).text();
 ok((await admin('/admin/inquiries')).status === 200 && (await admin('/admin/reports')).status === 200 && (await admin('/admin/listings?status=')).status === 200, 'admin pages load');
 ok((await guest('/admin')).status === 307, "guest can't open admin");
 
+console.log('Security regressions');
+// Admin pages must check the role themselves: an RSC request that claims the admin layout is already mounted skips the layout.
+const tree = JSON.stringify(['', { children: ['admin', { children: ['__PAGE__', {}] }, null, null] }, null, null, true]);
+const leak = await (await guest('/admin/users', { headers: { RSC: '1', 'Next-Router-State-Tree': tree } })).text();
+ok(!leak.includes('Everyone who signed up') && !leak.includes(ADMIN), "guest can't read admin pages via RSC request");
+const fd2 = new FormData(); fd2.append('file', new Blob([png], { type: 'image/png' }), 'b.png');
+const up2 = await (await host('/api/upload', { method: 'POST', body: fd2 })).json();
+const evil = await (await host('/api/properties', { method: 'POST', body: j({ listing_type: 'room', rent: 3000, city: 'bhilai', locality: 'Supela', contact_phone: hp, title: 'Smoke test image validation',
+  // Traversal target is a file that doesn't exist, so a vulnerable server can't damage anything.
+  images: [{ url: '/x.jpg', path: '../../smoke-traversal-probe-does-not-exist.txt' }, { url: 'https://example.com/hotlink.jpg', path: up2.path }] }) })).json();
+ok(evil.property.images.length === 1 && evil.property.images[0].url === up2.url, 'bad image paths dropped, image URL rebuilt from path');
+const foreign = await (await guest('/api/properties', { method: 'POST', body: j({ listing_type: 'room', rent: 3000, city: 'bhilai', locality: 'Supela', contact_phone: gp2, title: 'Smoke test foreign photo', images: [up] }) })).json();
+ok(foreign.property.images.length === 0, "can't attach another user's photo");
+await guest(`/api/properties/${foreign.property.id}`, { method: 'DELETE' });
+ok((await anon(up.url)).status === 200, "deleting a listing never deletes another user's photo");
+await host(`/api/properties/${evil.property.id}`, { method: 'PATCH', body: j({ ...evil.property, images: [] }) });
+ok((await anon(up2.url)).status === 404, 'photo removed in the editor is deleted after saving');
+const kept = await (await host(`/api/properties/${cp.id}`, { method: 'PATCH', body: j({ rent: 6500 }) })).json();
+ok(kept.property.images.length === 1 && (await anon(up.url)).status === 200, 'edit without images array keeps photos');
+await admin(`/api/admin/properties/${cp.id}`, { method: 'PATCH', body: j({ status: 'hidden' }) });
+ok((await host(`/api/properties/${cp.id}`, { method: 'PATCH', body: j({ action: 'relist' }) })).status === 400, "owner can't relist a listing an admin hid");
+await host(`/api/properties/${evil.property.id}`, { method: 'DELETE' });
+
 console.log('Blog');
 const slug = `smoke-post-${Date.now()}`;
 const bp = await admin('/api/admin/blogs', { method: 'POST', body: j({ title: 'Smoke test post about Bhilai', slug, excerpt: 'Short', content: '## First heading\n\nHello **Bhilai**.\n\n<script>alert(1)</script>', faq: [{ q: 'Q one?', a: 'A one.' }], status: 'draft', tags: 'test, bhilai' }) });

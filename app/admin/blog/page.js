@@ -1,8 +1,10 @@
 import Link from 'next/link';
 import { db } from '@/lib/db';
 import { shortDate } from '@/lib/site';
+import { requireAdmin } from '@/lib/auth';
 
 export default async function AdminBlog() {
+  await requireAdmin();
   const posts = await db.find('blogs', { order: ['updated_at', false], limit: 500 });
   return (
     <>

@@ -1,8 +1,10 @@
 import { db } from '@/lib/db';
 import { prettyPhone } from '@/lib/phone';
 import { relTime } from '@/lib/site';
+import { requireAdmin } from '@/lib/auth';
 
 export default async function AdminInquiries() {
+  await requireAdmin();
   const inq = await db.find('inquiries', { order: ['created_at', false], limit: 300 });
   const owners = inq.length ? await db.find('users', { in: { id: [...new Set(inq.map((i) => i.owner_id))] } }) : [];
   const byId = Object.fromEntries(owners.map((o) => [o.id, o]));

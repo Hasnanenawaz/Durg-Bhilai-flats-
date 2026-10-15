@@ -2,8 +2,10 @@ import Link from 'next/link';
 import { db } from '@/lib/db';
 import ResolveButton from '@/components/admin/ResolveButton';
 import { relTime } from '@/lib/site';
+import { requireAdmin } from '@/lib/auth';
 
 export default async function AdminReports() {
+  await requireAdmin();
   const reports = await db.find('reports', { order: ['created_at', false], limit: 200 });
   const props = reports.length ? await db.find('properties', { in: { id: [...new Set(reports.map((r) => r.property_id).filter(Boolean))] } }) : [];
   const byId = Object.fromEntries(props.map((p) => [p.id, p]));

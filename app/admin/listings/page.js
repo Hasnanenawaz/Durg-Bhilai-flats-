@@ -5,10 +5,12 @@ import { headline } from '@/components/PropertyCard';
 import { cityBySlug, CITIES } from '@/lib/locations';
 import { prettyPhone } from '@/lib/phone';
 import { rupees, relTime } from '@/lib/site';
+import { requireAdmin } from '@/lib/auth';
 
 const TABS = [['pending', 'Pending'], ['approved', 'Live'], ['rented', 'Rented'], ['hidden', 'Hidden'], ['rejected', 'Rejected'], ['', 'All']];
 
 export default async function AdminListings({ searchParams }) {
+  await requireAdmin();
   const sp = await searchParams;
   const status = sp.status ?? 'pending';
   const query = { eq: {}, order: ['created_at', false], limit: 200 };

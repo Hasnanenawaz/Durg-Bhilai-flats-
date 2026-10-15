@@ -1,9 +1,11 @@
 import { db } from '@/lib/db';
 import UserRow from '@/components/admin/UserRow';
+import { requireAdmin } from '@/lib/auth';
 
 const PER = 50;
 
 export default async function AdminUsers({ searchParams }) {
+  await requireAdmin();
   const sp = await searchParams;
   const q = (sp.q || '').trim();
   const query = { order: ['created_at', false], eq: {} };

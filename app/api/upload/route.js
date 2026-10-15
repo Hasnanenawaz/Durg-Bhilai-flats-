@@ -21,7 +21,7 @@ export async function POST(req) {
     const buf = Buffer.from(await file.arrayBuffer());
     const type = sniff(buf);
     if (!type) return fail('Only JPG, PNG or WebP images are allowed.');
-    const folder = form.get('folder') === 'blog' && user.is_admin ? 'blog' : 'properties';
+    const folder = form.get('folder') === 'blog' && user.is_admin ? 'blog' : `properties/${user.id}`;
     const saved = await storage.upload(buf, TYPES[type], type, folder);
     return json({ ok: true, ...saved });
   });

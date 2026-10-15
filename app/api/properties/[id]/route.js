@@ -17,6 +17,7 @@ export async function PATCH(req, { params }) {
     // Quick status actions from the host dashboard.
     if (b.action) {
       if (p.status === 'rejected' && !user.is_admin) return fail('This listing was rejected. Edit it to send it for review again.');
+      if (p.admin_hidden && !user.is_admin) return fail('Our team has hidden this listing. Contact us to get it back online.');
       // Relisting goes straight live only if an admin approved it before.
       const relisted = p.approved_at || process.env.LISTING_AUTO_APPROVE === 'true' ? 'approved' : 'pending';
       const map = { rented: 'rented', hide: 'hidden', relist: relisted };
@@ -25,10 +26,8 @@ export async function PATCH(req, { params }) {
       const next = await db.update('properties', p.id, { status: map[b.action] });
       return json({ ok: true, property: next });
     }
-    // Drop images that were removed in the editor.
-    const keep = new Set((b.images || []).map((i) => i.path));
-    for (const img of p.images || []) if (img.path && !keep.has(img.path)) await storage.remove(img.path);
-    const r = await updateProperty(p, b, { byAdmin: user.is_admin });
+    // updateProperty validates photo paths and deletes removed photos only after the save succeeds.
+    const r = await updateProperty(p, b, { byAdmin: user.is_admin, actorId: user.id });
     if (r.errors) return fail(r.errors.join(' '));
     return json({ ok: true, property: r.property });
   });

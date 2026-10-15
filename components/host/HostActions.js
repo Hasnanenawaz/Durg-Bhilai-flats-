@@ -20,7 +20,7 @@ export default function HostActions({ p }) {
       <a className="btn btn-ghost btn-sm" href={`/host/${p.id}/edit`}>Edit</a>
       {p.status === 'approved' && <button className="btn btn-soft btn-sm" disabled={busy} onClick={() => act('rented')}>Mark rented</button>}
       {p.status === 'approved' && <button className="btn btn-ghost btn-sm" disabled={busy} onClick={() => act('hide')}>Pause</button>}
-      {(p.status === 'rented' || p.status === 'hidden') && <button className="btn btn-soft btn-sm" disabled={busy} onClick={() => act('relist')}>Relist</button>}
+      {(p.status === 'rented' || p.status === 'hidden') && !p.admin_hidden && <button className="btn btn-soft btn-sm" disabled={busy} onClick={() => act('relist')}>Relist</button>}
       <button className="btn btn-danger btn-sm" disabled={busy} onClick={del}>Delete</button>
     </div>
   );

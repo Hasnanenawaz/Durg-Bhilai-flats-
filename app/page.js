@@ -1,79 +1,131 @@
 import Link from 'next/link';
-import { requireUser } from '@/lib/auth';
 import { db } from '@/lib/db';
-import HostTabs from '@/components/host/HostTabs';
-import HostActions from '@/components/host/HostActions';
-import ModeSwitch from '@/components/ModeSwitch';
-import { headline } from '@/components/PropertyCard';
-import { cityBySlug } from '@/lib/locations';
-import { rupees, relTime } from '@/lib/site';
+import HeroSearch from '@/components/home/HeroSearch';
+import RotatingWord from '@/components/ui/RotatingWord';
+import CountUp from '@/components/ui/CountUp';
+import PropertyCard, { headline, TypeIcon } from '@/components/PropertyCard';
+import Faq from '@/components/Faq';
+import { CITIES, LANDMARKS, LISTING_TYPES, cityBySlug, typeByValue } from '@/lib/locations';
+import { GENERAL_FAQ } from '@/lib/faqs';
+import { rupees } from '@/lib/site';
 
-export const metadata = { title: 'My listings', robots: { index: false } };
+export const metadata = { alternates: { canonical: '/' } };
 
-const STATUS = {
-  pending: ['badge-warn', 'Under review'],
-  approved: ['badge-green', 'Live'],
-  hidden: ['', 'Paused'],
-  rented: ['badge-dark', 'Rented'],
-  rejected: ['badge-red', 'Rejected — edit and resubmit'],
-};
+const WORDS = [
+  { text: 'flat', color: 'flat' },
+  { text: 'PG', color: 'pg' },
+  { text: 'room', color: 'room' },
+  { text: 'flatmate', color: 'flatmate' },
+];
 
-export default async function HostHome({ searchParams }) {
-  const sp = await searchParams;
-  const user = await requireUser('/host');
-  const [props, inq] = await Promise.all([
-    db.find('properties', { eq: { owner_id: user.id }, order: ['created_at', false] }),
-    db.find('inquiries', { eq: { owner_id: user.id }, limit: 2000 }),
+export default async function Home() {
+  const [latest, live] = await Promise.all([
+    db.find('properties', { eq: { status: 'approved' }, order: ['created_at', false], limit: 6 }),
+    db.count('properties', { eq: { status: 'approved' } }),
   ]);
-  const perProp = {};
-  for (const i of inq) perProp[i.property_id] = (perProp[i.property_id] || 0) + 1;
-  const week = inq.filter((i) => Date.now() - new Date(i.created_at) < 7 * 864e5).length;
-  const views = props.reduce((s, p) => s + (p.views || 0), 0);
-  const live = props.filter((p) => p.status === 'approved').length;
+  const preview = latest.slice(0, 3);
+  const primary = CITIES.filter((c) => c.primary);
+  const areas = primary.flatMap((c) => c.localities.slice(0, 12).map((l) => ({ city: c, name: l })));
 
   return (
-    <div className="wrap dash">
-      <div className="dash-head">
-        <div><span className="eyebrow">Host</span><h1>Your listings</h1></div>
-        <div className="row"><ModeSwitch mode={user.active_mode} /><Link className="btn btn-primary" href="/host/new">+ Add listing</Link></div>
-      </div>
-      <HostTabs current="/host" newCount={week} />
-      {sp.saved && <p className="notice notice-ok" style={{ marginBottom: 18 }}>Saved. {process.env.LISTING_AUTO_APPROVE === 'true' ? 'Your listing is live.' : 'New listings go live after a quick check by our team, usually within a day.'}</p>}
-
-      <div className="stats" style={{ marginBottom: 24 }}>
-        <div className="stat"><b>{live}</b><span>live listings</span></div>
-        <div className="stat"><b>{views}</b><span>total views</span></div>
-        <div className="stat"><b>{inq.length}</b><span>people asked for your number</span></div>
-        <div className="stat"><b>{week}</b><span>inquiries this week</span></div>
-      </div>
-
-      {props.length ? (
-        <div className="panel">
-          {props.map((p) => {
-            const [cls, label] = STATUS[p.status] || ['', p.status];
-            return (
-              <div key={p.id} className="hrow">
-                <div>
-                  <div className="row" style={{ gap: 8, marginBottom: 4 }}><span className={`badge ${cls}`}>{label}</span><span className="xs muted">Updated {relTime(p.updated_at)}</span></div>
-                  <Link href={`/property/${p.slug}`} style={{ fontWeight: 600 }}>{p.title || headline(p)}</Link>
-                  <div className="small muted">{headline(p)} · {p.locality}, {cityBySlug(p.city)?.name}</div>
+    <>
+      <section className="hero">
+        <div className="hero-bg" aria-hidden="true"><span className="blob blob-1" /><span className="blob blob-2" /><span className="blob blob-3" /></div>
+        <div className="wrap hero-grid">
+          <div>
+            <span className="eyebrow">Durg · Bhilai · Chhattisgarh</span>
+            <h1>Find a <RotatingWord words={WORDS} /> <em>without a broker.</em></h1>
+            <p className="lead">Owners list flats, PGs and rooms for free. You call them directly and pay ₹0 brokerage.</p>
+            <HeroSearch cities={CITIES.map(({ slug, name }) => ({ slug, name }))} />
+            <div className="trust-row">
+              <span><i>✓</i> Owner-listed</span>
+              <span><i>✓</i> OTP-verified accounts</span>
+              <span><i>✓</i> Listings checked by people</span>
+            </div>
+          </div>
+          {preview.length > 0 && (
+            <div className="hero-visual" aria-hidden="true">
+              {preview.map((p, i) => (
+                <div key={p.id} className={`pcard pcard-${i + 1} t-${p.listing_type}`}>
+                  <span className="ptype"><TypeIcon type={p.listing_type} size={14} />{typeByValue(p.listing_type)?.label}</span>
+                  <h4>{p.title || headline(p)}</h4>
+                  <p>{p.locality}, {cityBySlug(p.city)?.name}</p>
+                  <span className="rent">{rupees(p.rent)}<small>/mo</small></span>
                 </div>
-                <div className="small mono" style={{ textAlign: 'right' }}>
-                  <div className="rent" style={{ fontSize: '1.1rem' }}>{rupees(p.rent)}</div>
-                  <div className="muted xs">{p.views || 0} views · {perProp[p.id] || 0} inquiries</div>
-                </div>
-                <HostActions p={p} />
-              </div>
-            );
-          })}
+              ))}
+              <div className="zero-badge"><div><b>₹0</b><small>brokerage</small></div></div>
+            </div>
+          )}
         </div>
-      ) : (
-        <div className="empty">
-          <h3>No listings yet</h3>
-          <p>Add your flat, PG or room. It takes about five minutes and costs nothing.</p>
-          <Link className="btn btn-primary" href="/host/new">Add your first listing</Link>
+      </section>
+
+      <div className="marquee" aria-label="Popular areas">
+        <div className="marquee-track">
+          {[...areas, ...areas].map((a, i) => (
+            <Link key={i} href={`/search?city=${a.city.slug}&q=${encodeURIComponent(a.name)}`} tabIndex={i >= areas.length ? -1 : undefined} aria-hidden={i >= areas.length || undefined}>
+              {a.name} <span className="xs muted">{a.city.name}</span>
+            </Link>
+          ))}
         </div>
+      </div>
+
+      <section className="section-tight">
+        <div className="wrap">
+          <div className="stats reveal reveal-stagger">
+            <div className="stat"><b><CountUp to={live} /></b><span>live listings</span></div>
+            <div className="stat"><b>₹0</b><span>brokerage, for tenants and owners</span></div>
+            <div className="stat"><b><CountUp to={CITIES.length} /></b><span>cities in Chhattisgarh</span></div>
+            <div className="stat"><b><CountUp to={LANDMARKS.length} /></b><span>colleges and workplaces mapped</span></div>
+          </div>
+        </div>
+      </section>
+
+      {latest.length > 0 && (
+        <section className="section">
+          <div className="wrap">
+            <div className="row between"><h2>Just listed</h2><Link href="/search">See all places →</Link></div>
+            <div className="listings cols-2" style={{ marginTop: 16 }}>{latest.map((p) => <PropertyCard key={p.id} p={p} />)}</div>
+          </div>
+        </section>
       )}
-    </div>
+
+      <section className="section">
+        <div className="wrap">
+          <h2>How it works</h2>
+          <div className="steps-row reveal reveal-stagger" style={{ marginTop: 20 }}>
+            <div className="step"><h3>Search your area</h3><p>Filter by city, locality, rent, type and who it’s for.</p></div>
+            <div className="step"><h3>Log in with OTP</h3><p>Just your mobile number and a 6-digit code. No password.</p></div>
+            <div className="step"><h3>Call the owner</h3><p>Tap “Show owner’s number”, then call or WhatsApp. Nobody in between.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section" style={{ paddingTop: 0 }}>
+        <div className="wrap">
+          <h2>Browse by city</h2>
+          <div className="citygrid" style={{ marginTop: 16 }}>
+            {CITIES.map((c) => <Link key={c.slug} href={`/rent/${c.slug}`} className="citylink"><b>{c.name}</b><span>{c.hindi}</span></Link>)}
+          </div>
+          <div className="taglinks" style={{ marginTop: 20 }}>
+            {primary.flatMap((c) => LISTING_TYPES.map((t) => <Link key={`${c.slug}-${t.slug}`} href={`/rent/${c.slug}/${t.slug}`}>{t.plural} in {c.name}</Link>))}
+            {LANDMARKS.slice(0, 6).map((l) => <Link key={l.slug} href={`/near/${l.slug}`}>Near {l.name}</Link>)}
+          </div>
+        </div>
+      </section>
+
+      <section className="section" style={{ paddingTop: 0 }}>
+        <div className="wrap grid-2" style={{ gap: 40, alignItems: 'start' }}>
+          <div><h2>Questions people ask</h2><p className="muted">Short answers about renting and listing here.</p><Link href="/faq">All FAQs →</Link></div>
+          <Faq items={GENERAL_FAQ} />
+        </div>
+      </section>
+
+      <section className="wrap" style={{ paddingBottom: 56 }}>
+        <div className="cta-band">
+          <div><h2>Have a flat, PG or room to rent?</h2><p>List it free. Tenants call you directly, no broker in between.</p></div>
+          <Link href="/list-your-property" className="btn btn-warm btn-lg">List your place free</Link>
+        </div>
+      </section>
+    </>
   );
 }

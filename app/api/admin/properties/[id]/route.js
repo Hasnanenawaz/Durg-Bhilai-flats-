@@ -12,6 +12,8 @@ export async function PATCH(req, { params }) {
     const patch = {};
     if (STATUSES.includes(b.status)) {
       patch.status = b.status;
+      // A listing hidden by an admin stays down until an admin brings it back; the owner can't relist it.
+      patch.admin_hidden = b.status === 'hidden';
       if (b.status === 'approved' && !p.approved_at) patch.approved_at = new Date().toISOString();
     }
     if ('featured' in b) patch.featured = Boolean(b.featured);

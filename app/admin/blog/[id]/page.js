@@ -1,7 +1,9 @@
 import { notFound } from 'next/navigation';
 import { db } from '@/lib/db';
 import BlogEditor from '@/components/admin/BlogEditor';
+import { requireAdmin } from '@/lib/auth';
 export default async function EditPost({ params, searchParams }) {
+  await requireAdmin();
   const { id } = await params;
   const sp = await searchParams;
   const post = await db.get('blogs', id);
