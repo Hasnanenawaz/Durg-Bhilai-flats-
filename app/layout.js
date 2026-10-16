@@ -20,7 +20,7 @@ export const metadata = {
   formatDetection: { telephone: false },
 };
 
-export const viewport = { themeColor: '#1b6b45', width: 'device-width', initialScale: 1 };
+export const viewport = { themeColor: '#0b1f3a', width: 'device-width', initialScale: 1 };
 
 const orgLd = {
   '@context': 'https://schema.org',
@@ -45,7 +45,7 @@ export default function RootLayout({ children }) {
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Inter:wght@400;500;600&display=swap" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Caveat:wght@600;700&display=swap" />
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js-reveal')" }} />
         <JsonLd data={orgLd} />
       </head>

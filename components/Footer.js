@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Logo from './Logo';
 import { CITIES, LANDMARKS } from '@/lib/locations';
 import { SITE_NAME, SUPPORT_EMAIL, SUPPORT_WHATSAPP } from '@/lib/site';
 
@@ -8,9 +9,9 @@ export default function Footer() {
       <div className="wrap">
         <div className="footer-grid">
           <div>
-            <img src="/logo.png" alt={SITE_NAME} width="636" height="480" style={{ height: 88, width: 'auto', display: 'block', marginBottom: 12 }} />
+            <div style={{ marginBottom: 12 }}><Logo compact /></div>
             <p className="muted small" style={{ maxWidth: '34ch' }}>Flats, PGs, rooms and flatmates across Chhattisgarh. Owners list free. You call them directly. ₹0 brokerage, always.</p>
-            <Link href="/list-your-property" className="btn btn-soft btn-sm">List your place free</Link>
+            <Link href="/list-your-property" className="btn btn-soft btn-sm" style={{ marginTop: 4 }}>List your place free</Link>
           </div>
           <div>
             <h4>Cities</h4>

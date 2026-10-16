@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { rupees, relTime } from '@/lib/site';
 import { cityBySlug, typeByValue, tenantLabel } from '@/lib/locations';
+import Scene from '@/components/art/Scene';
 
 export function headline(p) {
   if (p.listing_type === 'flat') return `${p.bhk || ''} Flat`.trim();
@@ -25,14 +26,12 @@ export default function PropertyCard({ p, showStatus = false }) {
   const t = typeByValue(p.listing_type);
   return (
     <Link href={`/property/${p.slug}`} className={`lcard t-${p.listing_type}`}>
-      {img ? (
-        <div style={{ borderRadius: 10, overflow: 'hidden', width: 92, height: 92 }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="lthumb" src={img} alt={`${headline(p)} in ${p.locality}, ${city?.name}`} loading="lazy" width="92" height="92" />
-        </div>
-      ) : (
-        <div className="lthumb-ph" aria-hidden="true"><TypeIcon type={p.listing_type} /><span className="xs">{t?.label}</span></div>
-      )}
+      <div className="lthumb-wrap">
+        {img
+          // eslint-disable-next-line @next/next/no-img-element
+          ? <img className="lthumb" src={img} alt={`${headline(p)} in ${p.locality}, ${city?.name}`} loading="lazy" width="104" height="104" />
+          : <Scene kind={p.listing_type} uid={p.id} />}
+      </div>
       <div style={{ minWidth: 0 }}>
         <div className="row between" style={{ gap: 8, alignItems: 'flex-start', flexWrap: 'nowrap' }}>
           <div style={{ minWidth: 0 }}>

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import ModeSwitch from './ModeSwitch';
+import Logo from './Logo';
 
 const CITIES = [
   ['bhilai', 'Bhilai', 'भिलाई'], ['durg', 'Durg', 'दुर्ग'], ['raipur', 'Raipur', 'रायपुर'], ['bilaspur', 'Bilaspur', 'बिलासपुर'],
@@ -13,6 +14,7 @@ const POPULAR = [
   ['/rent/bhilai/rooms', 'Rooms in Bhilai', 'room'], ['/rent/bhilai/flatmates', 'Flatmates in Bhilai', 'flatmate'],
   ['/near/iit-bhilai', 'Near IIT Bhilai', 'flat'], ['/near/bit-durg', 'Near BIT Durg', 'pg'],
 ];
+const TYPES = [['flat', 'Flats'], ['pg', 'PG'], ['room', 'Rooms'], ['flatmate', 'Flatmates']];
 
 const Icon = {
   home: <path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z" />,
@@ -29,12 +31,17 @@ const Svg = ({ name, size = 22 }) => (
 export default function Navbar({ user }) {
   const path = usePathname();
   const [drawer, setDrawer] = useState(false);
-  const [menu, setMenu] = useState(null); // 'cities' | 'account'
+  const [menu, setMenu] = useState(null);
   const [scrolled, setScrolled] = useState(false);
+  const [qtype, setQtype] = useState('');
   const navRef = useRef(null);
   const host = user?.mode === 'host';
 
-  useEffect(() => { setDrawer(false); setMenu(null); }, [path]);
+  useEffect(() => {
+    setDrawer(false);
+    setMenu(null);
+    setQtype(new URLSearchParams(window.location.search).get('type') || '');
+  }, [path]);
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
     const onKey = (e) => e.key === 'Escape' && (setMenu(null), setDrawer(false));
@@ -48,6 +55,7 @@ export default function Navbar({ user }) {
   useEffect(() => { document.body.style.overflow = drawer ? 'hidden' : ''; }, [drawer]);
 
   const active = (h) => (h === '/' ? path === '/' : path === h || path.startsWith(h + '/'));
+  const typeActive = (t) => (path === '/search' && qtype === t) || path.endsWith(`/${{ flat: 'flats', pg: 'pg', room: 'rooms', flatmate: 'flatmates' }[t]}`);
   const listHref = user ? '/host/new' : '/list-your-property';
   const accountHref = host ? '/host' : '/account';
   const initial = (user?.name || 'U').trim()[0]?.toUpperCase();
@@ -57,13 +65,13 @@ export default function Navbar({ user }) {
     <>
       <header className={`navbar${scrolled ? ' is-scrolled' : ''}`} ref={navRef}>
         <div className="wrap navbar-inner">
-          <Link href="/" className="brand" aria-label="Durg Bhilai Flats and Flatmates, home">
-            <img className="brand-logo" src="/logo-mark.png" alt="" width="233" height="160" />
-            <span className="brand-text">Durg Bhilai Flats <small>&amp; Flatmates</small></span>
-          </Link>
+          <Logo />
 
           <nav className="nav-desktop" aria-label="Main">
-            <Link className="nav-link" href="/search" aria-current={active('/search') ? 'page' : undefined}>Find a place</Link>
+            <Link className="nav-link" href="/" aria-current={active('/') ? 'page' : undefined}>Home</Link>
+            {TYPES.map(([t, l]) => (
+              <Link key={t} className="nav-link" href={`/search?type=${t}`} aria-current={typeActive(t) ? 'page' : undefined}>{l}</Link>
+            ))}
             <div className="nav-drop">
               <button type="button" className="nav-link" aria-expanded={menu === 'cities'} aria-haspopup="true" onClick={(e) => { e.stopPropagation(); setMenu(menu === 'cities' ? null : 'cities'); }} data-active={active('/rent') || active('/near') ? '' : undefined}>
                 Cities <span className="caret" aria-hidden="true">▾</span>
@@ -72,9 +80,7 @@ export default function Navbar({ user }) {
                 <div>
                   <p className="mega-title">Browse by city</p>
                   <div className="mega-cities">
-                    {CITIES.map(([s, n, h]) => (
-                      <Link key={s} href={`/rent/${s}`} className="mega-city" role="menuitem"><b>{n}</b><span>{h}</span></Link>
-                    ))}
+                    {CITIES.map(([s, n, h]) => <Link key={s} href={`/rent/${s}`} className="mega-city" role="menuitem"><b>{n}</b><span>{h}</span></Link>)}
                   </div>
                 </div>
                 <div>
@@ -85,8 +91,8 @@ export default function Navbar({ user }) {
                 </div>
               </div>
             </div>
-            <Link className="nav-link" href={listHref} aria-current={active('/list-your-property') || active('/host/new') ? 'page' : undefined}>List free</Link>
             <Link className="nav-link" href="/blog" aria-current={active('/blog') ? 'page' : undefined}>Blog</Link>
+            <Link className="nav-link" href="/about" aria-current={active('/about') ? 'page' : undefined}>About</Link>
           </nav>
 
           <div className="nav-right">
@@ -94,9 +100,7 @@ export default function Navbar({ user }) {
               <>
                 {user.name && <span className="hide-md"><ModeSwitch mode={user.mode} /></span>}
                 <div className="nav-drop">
-                  <button type="button" className="avatar" aria-label="Account menu" aria-expanded={menu === 'account'} onClick={(e) => { e.stopPropagation(); setMenu(menu === 'account' ? null : 'account'); }}>
-                    {initial}
-                  </button>
+                  <button type="button" className="avatar" aria-label="Account menu" aria-expanded={menu === 'account'} onClick={(e) => { e.stopPropagation(); setMenu(menu === 'account' ? null : 'account'); }}>{initial}</button>
                   <div className={`menu${menu === 'account' ? ' open' : ''}`} role="menu">
                     <div className="menu-head"><b>{user.name || 'Your account'}</b><span>{host ? 'Host mode' : 'Guest mode'}</span></div>
                     <Link href="/account" role="menuitem"><Svg name="user" size={17} /> Profile & history</Link>
@@ -109,10 +113,7 @@ export default function Navbar({ user }) {
                 </div>
               </>
             ) : (
-              <>
-                <Link className="nav-link hide-sm" href="/login">Log in</Link>
-                <Link className="btn btn-primary btn-sm btn-shine" href="/list-your-property">List free</Link>
-              </>
+              <Link className="btn btn-login btn-shine" href="/login">Login / Sign up</Link>
             )}
             <button type="button" className="burger" aria-label={drawer ? 'Close menu' : 'Open menu'} aria-expanded={drawer} onClick={() => setDrawer(!drawer)}>
               <span /><span /><span />
@@ -121,14 +122,16 @@ export default function Navbar({ user }) {
         </div>
       </header>
 
-      {/* Mobile drawer */}
       <div className={`drawer-scrim${drawer ? ' open' : ''}`} onClick={() => setDrawer(false)} aria-hidden="true" />
       <aside className={`drawer${drawer ? ' open' : ''}`} aria-label="Menu" inert={!drawer}>
         <div className="drawer-top">
-          <Link href="/" className="brand"><img className="brand-logo" src="/logo-mark.png" alt="" width="233" height="160" /><span className="brand-text">Durg Bhilai Flats</span></Link>
+          <Logo compact />
           <button type="button" className="drawer-close" aria-label="Close menu" onClick={() => setDrawer(false)}>×</button>
         </div>
         {user?.name && <div className="drawer-mode"><span className="xs muted">I’m here to</span><ModeSwitch mode={user.mode} /></div>}
+        <div className="drawer-types">
+          {TYPES.map(([t, l]) => <Link key={t} href={`/search?type=${t}`} className={`t-${t}`}><i className={`dot t-${t}`} />{l}</Link>)}
+        </div>
         <nav className="drawer-links">
           <Link href="/search"><Svg name="search" size={19} /> Find a place</Link>
           <Link href={listHref}><Svg name="plus" size={19} /> List your place free</Link>
@@ -143,17 +146,16 @@ export default function Navbar({ user }) {
         </div>
         <div style={{ marginTop: 'auto', paddingTop: 20 }}>
           {user ? <button type="button" className="btn btn-ghost btn-block" onClick={logout}>Log out</button>
-            : <Link className="btn btn-primary btn-block" href="/login">Log in with OTP</Link>}
+            : <Link className="btn btn-amber btn-block" href="/login">Login / Sign up</Link>}
         </div>
       </aside>
 
-      {/* Mobile bottom tab bar */}
       <nav className="tabbar" aria-label="Quick navigation">
         <Link href="/" aria-current={active('/') ? 'page' : undefined}><Svg name="home" /><span>Home</span></Link>
         <Link href="/search" aria-current={active('/search') || active('/rent') ? 'page' : undefined}><Svg name="search" /><span>Search</span></Link>
         <Link href={listHref} className="tabbar-cta" aria-current={active('/host/new') ? 'page' : undefined}><span className="tabbar-plus"><Svg name="plus" size={24} /></span><span>List free</span></Link>
         <Link href={user ? '/account/saved' : '/login?next=/account/saved'} aria-current={active('/account/saved') ? 'page' : undefined}><Svg name="heart" /><span>Saved</span></Link>
-        <Link href={user ? accountHref : '/login'} aria-current={active('/account') && !active('/account/saved') || active('/host') && !active('/host/new') ? 'page' : undefined}><Svg name="user" /><span>{user ? 'Me' : 'Log in'}</span></Link>
+        <Link href={user ? accountHref : '/login'} aria-current={(active('/account') && !active('/account/saved')) || (active('/host') && !active('/host/new')) ? 'page' : undefined}><Svg name="user" /><span>{user ? 'Me' : 'Log in'}</span></Link>
       </nav>
     </>
   );

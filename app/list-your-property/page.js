@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import Faq from '@/components/Faq';
+import SkyHero from '@/components/home/SkyHero';
+import Scene from '@/components/art/Scene';
 import { getCurrentUser } from '@/lib/auth';
 
 export const metadata = {
@@ -20,18 +22,27 @@ export default async function ListYourProperty() {
   const start = user ? '/host/new' : '/login?mode=host&next=/host/new';
   return (
     <>
-      <section className="hero">
-        <div className="hero-bg" aria-hidden="true"><span className="blob blob-2" style={{ top: -120, left: 'auto', right: -60 }} /><span className="blob blob-1" style={{ top: 'auto', bottom: -160, right: 'auto', left: -100 }} /></div>
+      <SkyHero>
+        <span className="eyebrow reveal">For owners in Chhattisgarh</span>
+        <h1 className="reveal d1">Keep the full rent. <span className="y">Skip the broker.</span></h1>
+        <p className="lead reveal d2">List your flat, PG or room in Durg, Bhilai or any city in Chhattisgarh. Tenants who are actually looking call you directly.</p>
+        <div className="row reveal d3" style={{ marginTop: 26 }}>
+          <Link className="btn btn-amber btn-lg btn-shine" href={start}>List your place free</Link>
+          <span style={{ color: '#c4cfe3' }} className="small">Takes about 5 minutes · just your phone number</span>
+        </div>
+      </SkyHero>
+      <div className="cat-row">
         <div className="wrap">
-          <span className="eyebrow">For owners in Chhattisgarh</span>
-          <h1>Keep the full rent. <em>Skip the broker.</em></h1>
-          <p className="lead">List your flat, PG or room in Durg, Bhilai or any city in Chhattisgarh. Tenants who are actually looking call you directly.</p>
-          <div className="row" style={{ marginTop: 24 }}>
-            <Link className="btn btn-warm btn-lg btn-shine" href={start}>List your place free</Link>
-            <span className="muted small">Takes about 5 minutes · just your phone number</span>
+          <div className="cat-grid reveal reveal-stagger">
+            {[['flat', 'Flat', 'Families & working couples'], ['pg', 'PG', 'Students & professionals'], ['room', 'Room', 'Single tenants'], ['flatmate', 'Flatmate wanted', 'Already renting? Share it']].map(([v, t, s]) => (
+              <Link key={v} href={start} className={`cat-card t-${v}`}>
+                <div className="cat-art"><Scene kind={v} uid={`own-${v}`} /></div>
+                <div className="cat-body"><div><b>List a {t.toLowerCase()}</b><span>{s}</span></div><span className="cat-arrow" aria-hidden="true">+</span></div>
+              </Link>
+            ))}
           </div>
         </div>
-      </section>
+      </div>
       <section className="section-tight">
         <div className="wrap">
           <div className="stats reveal reveal-stagger">

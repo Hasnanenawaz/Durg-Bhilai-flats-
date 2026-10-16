@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import JsonLd from '@/components/JsonLd';
 import Tabs from '@/components/ui/Tabs';
+import Scene from '@/components/art/Scene';
 import PropertyCard, { headline } from '@/components/PropertyCard';
 import ContactOwner from '@/components/listing/ContactOwner';
 import SaveButton from '@/components/listing/SaveButton';
@@ -106,7 +107,7 @@ export default async function PropertyPage({ params }) {
             <p className="muted" style={{ margin: 0 }}>{headline(p)} · {p.locality}{near ? `, near ${near}` : ''}, {c.name}</p>
           </header>
 
-          {p.images?.length > 0 && (
+          {p.images?.length > 0 ? (
             <div className="gallery">
               {p.images.map((img, i) => (
                 <a key={i} href={img.url} target="_blank" rel="noopener">
@@ -115,6 +116,8 @@ export default async function PropertyPage({ params }) {
                 </a>
               ))}
             </div>
+          ) : (
+            <div className="prop-scene"><Scene kind={p.listing_type} uid={`p-${p.id}`} title={`Illustration of a ${t.label.toLowerCase()}`} /></div>
           )}
 
           <dl className="facts reveal" style={{ margin: '8px 0' }}>
