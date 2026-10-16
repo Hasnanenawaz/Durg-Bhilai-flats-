@@ -26,7 +26,7 @@ const orgLd = {
   '@context': 'https://schema.org',
   '@graph': [
     {
-      '@type': 'Organization', '@id': abs('/#org'), name: SITE_NAME, url: SITE_URL, logo: abs('/icon.svg'),
+      '@type': 'Organization', '@id': abs('/#org'), name: SITE_NAME, url: SITE_URL, logo: abs('/logo.png'),
       description: 'Zero-brokerage rental platform for flats, PGs, rooms and flatmates in Durg, Bhilai and Chhattisgarh.',
       areaServed: [{ '@type': 'State', name: 'Chhattisgarh' }, ...CITIES.slice(0, 4).map((c) => ({ '@type': 'City', name: c.name }))],
       address: { '@type': 'PostalAddress', addressLocality: 'Bhilai', addressRegion: 'Chhattisgarh', addressCountry: 'IN' },

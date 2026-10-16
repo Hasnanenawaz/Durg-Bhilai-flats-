@@ -8,7 +8,7 @@ export default function Footer() {
       <div className="wrap">
         <div className="footer-grid">
           <div>
-            <p style={{ fontFamily: 'var(--font-head)', fontWeight: 700, fontSize: '1.1rem', marginBottom: 6 }}>{SITE_NAME}</p>
+            <img src="/logo.png" alt={SITE_NAME} width="636" height="480" style={{ height: 88, width: 'auto', display: 'block', marginBottom: 12 }} />
             <p className="muted small" style={{ maxWidth: '34ch' }}>Flats, PGs, rooms and flatmates across Chhattisgarh. Owners list free. You call them directly. ₹0 brokerage, always.</p>
             <Link href="/list-your-property" className="btn btn-soft btn-sm">List your place free</Link>
           </div>

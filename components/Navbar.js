@@ -58,7 +58,7 @@ export default function Navbar({ user }) {
       <header className={`navbar${scrolled ? ' is-scrolled' : ''}`} ref={navRef}>
         <div className="wrap navbar-inner">
           <Link href="/" className="brand" aria-label="Durg Bhilai Flats and Flatmates, home">
-            <span className="brand-mark" aria-hidden="true"><span>DB</span></span>
+            <img className="brand-logo" src="/logo-mark.png" alt="" width="233" height="160" />
             <span className="brand-text">Durg Bhilai Flats <small>&amp; Flatmates</small></span>
           </Link>
 
