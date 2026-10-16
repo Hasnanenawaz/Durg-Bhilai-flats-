@@ -125,7 +125,7 @@ export default function Navbar({ user }) {
       <div className={`drawer-scrim${drawer ? ' open' : ''}`} onClick={() => setDrawer(false)} aria-hidden="true" />
       <aside className={`drawer${drawer ? ' open' : ''}`} aria-label="Menu" inert={!drawer}>
         <div className="drawer-top">
-          <Link href="/" className="brand"><span className="brand-mark" aria-hidden="true"><span>DB</span></span><span className="brand-text">Durg Bhilai Flats</span></Link>
+          <Link href="/" className="brand"><img className="brand-logo" src="/logo-mark.png" alt="" width="233" height="160" /><span className="brand-text">Durg Bhilai Flats</span></Link>
           <button type="button" className="drawer-close" aria-label="Close menu" onClick={() => setDrawer(false)}>×</button>
         </div>
         {user?.name && <div className="drawer-mode"><span className="xs muted">I’m here to</span><ModeSwitch mode={user.mode} /></div>}
