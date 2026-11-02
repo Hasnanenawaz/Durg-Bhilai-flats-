@@ -11,6 +11,8 @@ const nextConfig = {
     ],
   },
   experimental: { serverActions: { bodySizeLimit: '8mb' } },
+  // lib/og.js reads these at request time; the tracer can't see its built-up paths, so ship them explicitly.
+  outputFileTracingIncludes: { '/**/opengraph-image': ['./assets/fonts/*.woff', './public/logo-mark.png'] },
   async headers() {
     return [{
       source: '/(.*)',
