@@ -10,7 +10,7 @@ import RotatingWord from '@/components/ui/RotatingWord';
 import { db } from '@/lib/db';
 import { CITIES, LANDMARKS, LISTING_TYPES } from '@/lib/locations';
 import { GENERAL_FAQ } from '@/lib/faqs';
-import { shortDate } from '@/lib/site';
+import { shortDate, og } from '@/lib/site';
 
 export const revalidate = 300;
 
@@ -18,6 +18,7 @@ export const metadata = {
   title: { absolute: 'Flats, PG & Rooms on Rent in Durg-Bhilai | Zero Brokerage | Durg Bhilai Flats & Flatmates' },
   description: 'Looking for a flat, PG, room or flatmate in Durg-Bhilai? See listings posted by owners and call them directly. Free to list, free to search, ₹0 brokerage.',
   alternates: { canonical: '/' },
+  openGraph: og('/'),
 };
 
 const WORDS = [{ text: 'flat', color: 'flat' }, { text: 'PG', color: 'pg' }, { text: 'room', color: 'room' }, { text: 'flatmate', color: 'flatmate' }];

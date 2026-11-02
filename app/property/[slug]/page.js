@@ -12,7 +12,7 @@ import { db } from '@/lib/db';
 import { getCurrentUser } from '@/lib/auth';
 import { isPublic } from '@/lib/models';
 import { cityBySlug, typeByValue, tenantLabel } from '@/lib/locations';
-import { rupees, shortDate, abs, relTime } from '@/lib/site';
+import { rupees, shortDate, abs, relTime, og } from '@/lib/site';
 
 async function load(slug) {
   return db.getBy('properties', 'slug', slug);
@@ -29,7 +29,7 @@ export async function generateMetadata({ params }) {
     title: t,
     description: d,
     alternates: { canonical: `/property/${p.slug}` },
-    openGraph: { title: t, description: d, url: abs(`/property/${p.slug}`), images: p.images?.[0]?.url ? [{ url: p.images[0].url }] : undefined },
+    openGraph: og(`/property/${p.slug}`, { title: t, description: d }),
     robots: p.status === 'rented' ? { index: false, follow: true } : undefined,
   };
 }

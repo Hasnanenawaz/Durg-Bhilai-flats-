@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import CityPage from '@/components/seo/CityPage';
 import { cityBySlug, typeBySlug } from '@/lib/locations';
+import { og } from '@/lib/site';
 
 const COPY = {
   flats: (c) => [`Flats on Rent in ${c} – 1, 2 & 3 BHK, No Brokerage`, `1 BHK, 2 BHK and 3 BHK flats for rent in ${c}, listed by owners. Compare rent and deposit, then call the owner directly. Zero brokerage.`],
@@ -19,6 +20,7 @@ export async function generateMetadata({ params, searchParams }) {
   return {
     title, description,
     alternates: { canonical: `/rent/${c.slug}/${t.slug}` },
+    openGraph: og(`/rent/${c.slug}/${t.slug}`),
     robots: Object.keys(sp).some((k) => k !== 'page') ? { index: false, follow: true } : undefined,
   };
 }

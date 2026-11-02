@@ -6,7 +6,7 @@ import Faq from '@/components/Faq';
 import JsonLd from '@/components/JsonLd';
 import { db } from '@/lib/db';
 import { landmarkBySlug, cityBySlug, LANDMARKS } from '@/lib/locations';
-import { rupees, abs } from '@/lib/site';
+import { rupees, abs, og } from '@/lib/site';
 
 const KIND = { college: 'students', workplace: 'employees', hospital: 'doctors, nurses and patients’ families', transit: 'people who travel often' };
 
@@ -27,6 +27,7 @@ export async function generateMetadata({ params }) {
     title: `PG, Rooms & Flats near ${l.name} – No Brokerage`,
     description: `Find PGs, rooms and flats on rent near ${l.name} in ${cityBySlug(l.city).name}. Listings in ${l.localities.join(', ')}. Call owners directly, zero brokerage.`,
     alternates: { canonical: `/near/${l.slug}` },
+    openGraph: og(`/near/${l.slug}`),
   };
 }
 

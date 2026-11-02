@@ -1,6 +1,7 @@
 import Faq from '@/components/Faq';
 import { GENERAL_FAQ } from '@/lib/faqs';
-export const metadata = { title: 'FAQ – Renting Flats, PGs & Rooms in Durg-Bhilai', description: 'Answers about finding and listing flats, PGs, rooms and flatmates in Durg, Bhilai and Chhattisgarh with zero brokerage.', alternates: { canonical: '/faq' } };
+import { ogSite } from '@/lib/site';
+export const metadata = { title: 'FAQ – Renting Flats, PGs & Rooms in Durg-Bhilai', description: 'Answers about finding and listing flats, PGs, rooms and flatmates in Durg, Bhilai and Chhattisgarh with zero brokerage.', alternates: { canonical: '/faq' }, openGraph: ogSite('/faq') };
 const MORE = [
   { q: 'Do I need separate accounts to rent and to list?', a: 'No. One phone number gives you one account. Use the Guest / Host switch at the top to move between finding a place and managing your listings.' },
   { q: 'Is my phone number shown publicly?', a: 'No. Owners’ numbers are shown only to logged-in users who tap “Show owner’s number”, and tenants’ numbers are shared only with the owner they contacted.' },

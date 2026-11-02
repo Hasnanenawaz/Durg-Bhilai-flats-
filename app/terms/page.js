@@ -1,5 +1,5 @@
-import { SITE_NAME } from '@/lib/site';
-export const metadata = { title: 'Terms of Use', alternates: { canonical: '/terms' } };
+import { SITE_NAME, ogSite } from '@/lib/site';
+export const metadata = { title: 'Terms of Use', alternates: { canonical: '/terms' }, openGraph: ogSite('/terms') };
 export default function Terms() {
   return (
     <div className="wrap section prose" style={{ maxWidth: 760 }}>

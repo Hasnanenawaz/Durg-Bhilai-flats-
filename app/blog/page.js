@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { db } from '@/lib/db';
-import { shortDate } from '@/lib/site';
+import { shortDate, ogSite } from '@/lib/site';
 import { readingMinutes } from '@/lib/blog';
 
 export const revalidate = 600;
@@ -8,6 +8,7 @@ export const metadata = {
   title: 'Renting Guides for Durg, Bhilai & Chhattisgarh',
   description: 'Practical guides on finding flats, PGs, rooms and flatmates in Durg, Bhilai, Raipur and across Chhattisgarh, without paying a broker.',
   alternates: { canonical: '/blog' },
+  openGraph: ogSite('/blog'),
 };
 
 export default async function Blog({ searchParams }) {

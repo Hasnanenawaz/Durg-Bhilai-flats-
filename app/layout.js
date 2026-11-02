@@ -13,7 +13,7 @@ export const metadata = {
   keywords: ['flats for rent in Bhilai', 'PG in Bhilai', 'rooms on rent in Durg', 'flatmates Durg Bhilai', 'no brokerage rent Chhattisgarh', 'PG near IIT Bhilai', 'flat on rent Raipur'],
   applicationName: SITE_NAME,
   alternates: { canonical: '/' },
-  openGraph: { type: 'website', locale: 'en_IN', siteName: SITE_NAME, url: SITE_URL },
+  openGraph: { type: 'website', locale: 'en_IN', siteName: SITE_NAME },
   twitter: { card: 'summary_large_image' },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 } },
   other: { 'geo.region': 'IN-CT', 'geo.placename': 'Bhilai, Durg, Chhattisgarh' },

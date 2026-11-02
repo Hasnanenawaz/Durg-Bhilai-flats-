@@ -3,11 +3,13 @@ import Faq from '@/components/Faq';
 import SkyHero from '@/components/home/SkyHero';
 import Scene from '@/components/art/Scene';
 import { getCurrentUser } from '@/lib/auth';
+import { ogSite } from '@/lib/site';
 
 export const metadata = {
   title: 'List Your Flat, PG or Room for Free in Durg-Bhilai',
   description: 'Rent out your flat, PG or room in Durg, Bhilai or anywhere in Chhattisgarh for free. No broker, no commission. Tenants call you directly.',
   alternates: { canonical: '/list-your-property' },
+  openGraph: ogSite('/list-your-property'),
 };
 
 const FAQ = [

@@ -7,7 +7,7 @@ import JsonLd from '@/components/JsonLd';
 import PropertyCard from '@/components/PropertyCard';
 import { renderMarkdown, headingsOf, readingMinutes } from '@/lib/blog';
 import { cityBySlug } from '@/lib/locations';
-import { abs, shortDate, SITE_NAME } from '@/lib/site';
+import { abs, shortDate, SITE_NAME, og } from '@/lib/site';
 import { getCurrentUser } from '@/lib/auth';
 
 export const revalidate = 600;
@@ -25,7 +25,7 @@ export async function generateMetadata({ params }) {
   return {
     title, description,
     alternates: { canonical: `/blog/${b.slug}` },
-    openGraph: { type: 'article', title, description, url: abs(`/blog/${b.slug}`), publishedTime: b.published_at, modifiedTime: b.updated_at, images: b.cover_image ? [{ url: b.cover_image }] : undefined },
+    openGraph: og(`/blog/${b.slug}`, { type: 'article', title, description, publishedTime: b.published_at, modifiedTime: b.updated_at, authors: [b.author] }),
   };
 }
 

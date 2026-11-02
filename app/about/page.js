@@ -1,5 +1,6 @@
 import Link from 'next/link';
-export const metadata = { title: 'About Us – Zero-Brokerage Rentals in Durg-Bhilai', description: 'Why we built Durg Bhilai Flats & Flatmates: a free, broker-free way to find and list flats, PGs and rooms in Chhattisgarh.', alternates: { canonical: '/about' } };
+import { ogSite } from '@/lib/site';
+export const metadata = { title: 'About Us – Zero-Brokerage Rentals in Durg-Bhilai', description: 'Why we built Durg Bhilai Flats & Flatmates: a free, broker-free way to find and list flats, PGs and rooms in Chhattisgarh.', alternates: { canonical: '/about' }, openGraph: ogSite('/about') };
 export default function About() {
   return (
     <div className="wrap section" style={{ maxWidth: 760 }}>

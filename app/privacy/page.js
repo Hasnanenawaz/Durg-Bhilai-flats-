@@ -1,5 +1,5 @@
-import { SITE_NAME, SUPPORT_EMAIL } from '@/lib/site';
-export const metadata = { title: 'Privacy Policy', alternates: { canonical: '/privacy' } };
+import { SITE_NAME, SUPPORT_EMAIL, ogSite } from '@/lib/site';
+export const metadata = { title: 'Privacy Policy', alternates: { canonical: '/privacy' }, openGraph: ogSite('/privacy') };
 export default function Privacy() {
   return (
     <div className="wrap section prose" style={{ maxWidth: 760 }}>
