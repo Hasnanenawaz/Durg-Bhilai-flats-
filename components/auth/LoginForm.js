@@ -47,7 +47,12 @@ export default function LoginForm({ next = '/', mode = '', firebase, devOtp }) {
     try {
       if (firebase) {
         const { auth, authMod } = await firebaseAuth();
-        if (!fb.current.verifier) fb.current.verifier = new authMod.RecaptchaVerifier(auth, 'recaptcha', { size: 'invisible' });
+        if (!fb.current.verifier) {
+          // clear() leaves an invisible widget on its element, so each new verifier needs a fresh one or a retry throws.
+          const el = document.createElement('div');
+          document.getElementById('recaptcha').replaceChildren(el);
+          fb.current.verifier = new authMod.RecaptchaVerifier(auth, el, { size: 'invisible' });
+        }
         fb.current.confirm = await authMod.signInWithPhoneNumber(auth, `+91${phone}`, fb.current.verifier);
       } else if (devOtp) {
         const r = await fetch('/api/auth/otp', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ phone }) });
