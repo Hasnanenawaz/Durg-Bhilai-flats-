@@ -12,7 +12,7 @@ export default async function AdminLoginPage() {
     <div className="auth-wrap">
       <span className="eyebrow">Admin</span>
       <h1 style={{ fontSize: '2rem' }}>Admin login</h1>
-      <p className="muted">Enter an admin mobile number to open the admin panel.</p>
+      <p className="muted">Enter the admin passcode to open the admin panel.</p>
       <div className="card" style={{ marginTop: 20 }}>
         <AdminLoginForm />
       </div>

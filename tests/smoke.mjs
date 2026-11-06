@@ -1,5 +1,5 @@
 // End-to-end smoke test against a running server in dev-OTP mode.
-// Usage: SESSION_SECRET=<random 16+ chars> ALLOW_DEV_OTP=true ADMIN_PHONES=9876543210 npm start   then   node tests/smoke.mjs
+// Usage: SESSION_SECRET=<random 16+ chars> ALLOW_DEV_OTP=true ADMIN_PHONES=9876543210 ADMIN_PASSCODE=smoke-passcode npm start   then   node tests/smoke.mjs
 const BASE = process.env.BASE || 'http://localhost:3000';
 const ADMIN = process.env.ADMIN_PHONE || '9876543210';
 let pass = 0, fail = 0;
@@ -47,6 +47,15 @@ const g = await login(guest, gp2, 'Test Guest');
 ok(g.status === 200 && g.needsProfile, 'guest signs up with OTP');
 const h = await login(host, hp, 'Test Host', 'host');
 ok(h.status === 200 && h.mode === 'host', 'host signs up in host mode');
+const PASSCODE = process.env.ADMIN_PASSCODE || 'smoke-passcode';
+const pc = client();
+const adminLogin = (b) => pc('/api/auth/admin', { method: 'POST', body: j(b) });
+ok((await adminLogin({ passcode: 'wrong' })).status === 403, 'wrong admin passcode rejected');
+ok((await adminLogin({})).status === 403, 'empty admin passcode rejected');
+ok((await adminLogin({ phone: ADMIN })).status === 403, 'admin phone alone no longer logs in');
+ok((await pc('/admin')).status === 307, 'failed passcode gives no admin access');
+ok((await adminLogin({ passcode: PASSCODE })).status === 200, 'admin passcode logs in');
+ok((await pc('/admin')).status === 200, 'admin passcode opens the admin panel');
 const a = await login(admin, ADMIN, 'Admin');
 ok(a.status === 200 && a.admin, 'admin phone gets admin');
 

@@ -29,7 +29,7 @@ npm run seed -- --demo          # 2 starter blog posts + sample listings (for te
 npm run dev                     # http://localhost:3000
 ```
 
-Without Supabase and Firebase keys the site runs in **local mode**: data is saved to `.data/db.json`, and the OTP is shown on screen instead of being sent by SMS. Log in with the number you put in `ADMIN_PHONES` to open `/admin`.
+Without Supabase and Firebase keys the site runs in **local mode**: data is saved to `.data/db.json`, and the OTP is shown on screen instead of being sent by SMS. Set `ADMIN_PASSCODE` and enter it at `/admin-login` to open `/admin`.
 
 ---
 
@@ -56,6 +56,7 @@ No Firebase secret is needed on the server: the site checks the login token agai
    - `NEXT_PUBLIC_SITE_URL` to your real domain (used for canonical URLs, sitemap and schema)
    - `SESSION_SECRET` to a long random string (`openssl rand -base64 48`)
    - `ADMIN_PHONES` to your 10-digit number(s), comma separated
+   - `ADMIN_PASSCODE` to the passcode for `/admin-login`
    - `ALLOW_DEV_OTP=false`
 3. Deploy, then submit `https://yourdomain/sitemap.xml` in Google Search Console and Bing Webmaster Tools.
 
@@ -95,7 +96,7 @@ tests/smoke.mjs         end-to-end test (71 checks)
 
 ```bash
 npm run build
-ALLOW_DEV_OTP=true ADMIN_PHONES=9876543210 npm start
+ALLOW_DEV_OTP=true ADMIN_PHONES=9876543210 ADMIN_PASSCODE=smoke-passcode npm start
 node tests/smoke.mjs
 ```
 
