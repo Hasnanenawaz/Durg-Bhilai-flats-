@@ -121,6 +121,18 @@ create table if not exists public.blogs (
   updated_at      timestamptz not null default now()
 );
 
+-- ── OTP rate limits (used with MSG91; rows older than a day are deleted automatically) ──
+create table if not exists public.otp_events (
+  id              uuid primary key default gen_random_uuid(),
+  kind            text not null check (kind in ('send','verify')),
+  phone           text not null,
+  ip              text not null,
+  created_at      timestamptz not null default now()
+);
+create index if not exists otp_events_phone_idx on public.otp_events (kind, phone, created_at);
+create index if not exists otp_events_ip_idx on public.otp_events (kind, ip, created_at);
+alter table public.otp_events enable row level security;
+
 alter table public.users      enable row level security;
 alter table public.properties enable row level security;
 alter table public.inquiries  enable row level security;

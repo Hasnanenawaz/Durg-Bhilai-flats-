@@ -10,7 +10,7 @@ const firebaseConfig = {
 
 const valid = (p) => /^[6-9]\d{9}$/.test(p);
 
-export default function LoginForm({ next = '/', mode = '', firebase, devOtp }) {
+export default function LoginForm({ next = '/', mode = '', firebase, serverOtp }) {
   const [step, setStep] = useState('phone');
   const [phone, setPhone] = useState('');
   const [code, setCode] = useState('');
@@ -54,7 +54,7 @@ export default function LoginForm({ next = '/', mode = '', firebase, devOtp }) {
           fb.current.verifier = new authMod.RecaptchaVerifier(auth, el, { size: 'invisible' });
         }
         fb.current.confirm = await authMod.signInWithPhoneNumber(auth, `+91${phone}`, fb.current.verifier);
-      } else if (devOtp) {
+      } else if (serverOtp) {
         const r = await fetch('/api/auth/otp', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ phone }) });
         const d = await r.json();
         if (!r.ok) throw new Error(d.error);

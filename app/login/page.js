@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import LoginForm from '@/components/auth/LoginForm';
 import { getCurrentUser } from '@/lib/auth';
-import { firebaseEnabled, devOtpEnabled } from '@/lib/otp';
+import { msg91Enabled, firebaseEnabled, devOtpEnabled } from '@/lib/otp';
 
 export const metadata = { title: 'Log in with OTP', robots: { index: false } };
 
@@ -19,7 +19,7 @@ export default async function LoginPage({ searchParams }) {
       <h1 style={{ fontSize: '2rem' }}>{mode === 'host' ? 'Start with your phone number' : 'Log in or sign up'}</h1>
       <p className="muted">One account for everything. Look for a place as a guest, or switch to host and list yours.</p>
       <div className="card" style={{ marginTop: 20 }}>
-        <LoginForm next={next} mode={mode} firebase={firebaseEnabled} devOtp={devOtpEnabled} />
+        <LoginForm next={next} mode={mode} firebase={firebaseEnabled} serverOtp={msg91Enabled || devOtpEnabled} />
       </div>
       <p className="xs muted" style={{ marginTop: 16 }}>By continuing you agree to our <a href="/terms">Terms</a> and <a href="/privacy">Privacy Policy</a>. Your number is shared with an owner only when you ask for theirs.</p>
     </div>

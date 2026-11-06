@@ -50,6 +50,14 @@ Without Supabase and Firebase keys the site runs in **local mode**: data is save
 
 No Firebase secret is needed on the server: the site checks the login token against Google's public keys.
 
+### 2b. MSG91 (OTP SMS, replaces Firebase when set)
+1. Complete DLT registration, then in MSG91 go to **OTP → Templates → Add template**. Use `##OTP##` where the code goes, and copy the template ID.
+2. Create an authkey under **Authkey** in the MSG91 panel. Vercel's server IPs change, so turn off IP security for this key if requests are rejected.
+3. Run the `otp_events` part of `supabase/schema.sql` in the Supabase SQL Editor. Without this table, codes won't send.
+4. Add `MSG91_AUTHKEY` and `MSG91_OTP_TEMPLATE_ID` in Vercel and redeploy. Remove them and redeploy to go back to Firebase.
+
+Each number can request a code every 30 seconds and 5 times an hour, and gets 5 tries per 15 minutes. Each IP can request 20 codes an hour and make 30 tries per 15 minutes. To test: `SESSION_SECRET=<random 16+ chars> MSG91_AUTHKEY=test MSG91_OTP_TEMPLATE_ID=test MSG91_API_URL=http://localhost:4991 npm start`, then `node tests/msg91.mjs`.
+
 ### 3. Deploy on Vercel
 1. Push this folder to GitHub and import it in Vercel.
 2. Add every variable from `.env.example` in **Settings → Environment Variables**. Set:
