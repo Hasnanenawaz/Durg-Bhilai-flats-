@@ -1,6 +1,6 @@
 import { json, fail, body, sameOrigin, clientIp } from '@/lib/api';
 import { normalizePhone } from '@/lib/phone';
-import { msg91Enabled, checkMsg91Otp, firebaseEnabled, verifyFirebaseToken, devOtpEnabled, checkDevOtp } from '@/lib/otp';
+import { msg91Enabled, checkMsg91Otp, msg91WidgetEnabled, verifyMsg91WidgetToken, firebaseEnabled, verifyFirebaseToken, devOtpEnabled, checkDevOtp } from '@/lib/otp';
 import { loginUser } from '@/lib/models';
 import { db } from '@/lib/db';
 import { setSessionCookie, isAdmin } from '@/lib/auth';
@@ -15,6 +15,9 @@ export async function POST(req) {
       if (!phone) return fail('Only Indian mobile numbers are supported.', 400);
       const r = await checkMsg91Otp(phone, b.code, clientIp(req));
       if (r.error) return fail(r.error, r.status);
+    } else if (msg91WidgetEnabled) {
+      phone = normalizePhone(await verifyMsg91WidgetToken(b.widgetToken));
+      if (!phone) return fail('Could not verify your number. Please try again.', 401);
     } else if (firebaseEnabled) {
       if (!b.idToken) return fail('Missing verification token.');
       phone = normalizePhone(await verifyFirebaseToken(b.idToken));

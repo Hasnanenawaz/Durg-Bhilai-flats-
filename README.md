@@ -56,7 +56,9 @@ No Firebase secret is needed on the server: the site checks the login token agai
 3. Run the `otp_events` part of `supabase/schema.sql` in the Supabase SQL Editor. Without this table, codes won't send.
 4. Add `MSG91_AUTHKEY` and `MSG91_OTP_TEMPLATE_ID` in Vercel and redeploy. Remove them and redeploy to go back to Firebase.
 
-Each number can request a code every 30 seconds and 5 times an hour, and gets 5 tries per 15 minutes. Each IP can request 20 codes an hour and make 30 tries per 15 minutes. To test: `SESSION_SECRET=<random 16+ chars> MSG91_AUTHKEY=test MSG91_OTP_TEMPLATE_ID=test MSG91_API_URL=http://localhost:4991 npm start`, then `node tests/msg91.mjs`.
+**Or the OTP Widget, which can run on MSG91's default template before DLT is approved:** in MSG91 go to **OTP → Create New Widget**, choose Mobile with SMS only, 6 digits, India only, reCAPTCHA on, then create its Auth Token. Add `MSG91_AUTHKEY`, `MSG91_WIDGET_ID` and `MSG91_WIDGET_TOKEN` in Vercel and redeploy, leaving `MSG91_OTP_TEMPLATE_ID` empty. The browser sends the SMS, so the limits below don't apply; sending is limited only by MSG91's settings and your balance. To test: `SESSION_SECRET=<random 16+ chars> ADMIN_PHONES=9000000009 MSG91_AUTHKEY=test MSG91_WIDGET_ID=test-widget MSG91_WIDGET_TOKEN=test-token MSG91_API_URL=http://localhost:4992 npm start`, then `node tests/msg91-widget.mjs`.
+
+With the OTP API, each number can request a code every 30 seconds and 5 times an hour, and gets 5 tries per 15 minutes. Each IP can request 20 codes an hour and make 30 tries per 15 minutes. To test: `SESSION_SECRET=<random 16+ chars> MSG91_AUTHKEY=test MSG91_OTP_TEMPLATE_ID=test MSG91_API_URL=http://localhost:4991 npm start`, then `node tests/msg91.mjs`.
 
 ### 3. Deploy on Vercel
 1. Push this folder to GitHub and import it in Vercel.

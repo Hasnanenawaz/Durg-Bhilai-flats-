@@ -1,7 +1,8 @@
 import { redirect } from 'next/navigation';
 import LoginForm from '@/components/auth/LoginForm';
+import WidgetLogin from '@/components/auth/WidgetLogin';
 import { getCurrentUser } from '@/lib/auth';
-import { msg91Enabled, firebaseEnabled, devOtpEnabled } from '@/lib/otp';
+import { msg91Enabled, msg91WidgetConfig, firebaseEnabled, devOtpEnabled } from '@/lib/otp';
 
 export const metadata = { title: 'Log in with OTP', robots: { index: false } };
 
@@ -19,7 +20,9 @@ export default async function LoginPage({ searchParams }) {
       <h1 style={{ fontSize: '2rem' }}>{mode === 'host' ? 'Start with your phone number' : 'Log in or sign up'}</h1>
       <p className="muted">One account for everything. Look for a place as a guest, or switch to host and list yours.</p>
       <div className="card" style={{ marginTop: 20 }}>
-        <LoginForm next={next} mode={mode} firebase={firebaseEnabled} serverOtp={msg91Enabled || devOtpEnabled} />
+        {msg91WidgetConfig
+          ? <WidgetLogin next={next} mode={mode} config={msg91WidgetConfig} />
+          : <LoginForm next={next} mode={mode} firebase={firebaseEnabled} serverOtp={msg91Enabled || devOtpEnabled} />}
       </div>
       <p className="xs muted" style={{ marginTop: 16 }}>By continuing you agree to our <a href="/terms">Terms</a> and <a href="/privacy">Privacy Policy</a>. Your number is shared with an owner only when you ask for theirs.</p>
     </div>

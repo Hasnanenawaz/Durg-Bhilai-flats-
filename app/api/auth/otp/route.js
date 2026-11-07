@@ -5,7 +5,7 @@ import { msg91Enabled, sendMsg91Otp, devOtpEnabled, issueDevOtp } from '@/lib/ot
 // Sends the code for MSG91 and dev mode. With Firebase the browser sends the SMS itself.
 export async function POST(req) {
   if (!sameOrigin(req)) return fail('Bad origin', 403);
-  if (!msg91Enabled && !devOtpEnabled) return fail('OTP is sent by Firebase on this site.', 400);
+  if (!msg91Enabled && !devOtpEnabled) return fail('OTP is not sent by the server on this site.', 400);
   const phone = normalizePhone((await body(req)).phone);
   if (!phone) return fail('Enter a valid 10-digit mobile number.');
   if (msg91Enabled) {

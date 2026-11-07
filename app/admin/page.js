@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { db, usingSupabase } from '@/lib/db';
-import { msg91Enabled, firebaseEnabled } from '@/lib/otp';
+import { msg91Enabled, msg91WidgetEnabled, firebaseEnabled } from '@/lib/otp';
 import { prettyPhone } from '@/lib/phone';
 import { relTime } from '@/lib/site';
 import { cityBySlug } from '@/lib/locations';
@@ -25,9 +25,9 @@ export default async function AdminHome() {
     <>
       <div className="dash-head"><div><span className="eyebrow">Overview</span><h1>Today at a glance</h1></div>
         <a className="btn btn-ghost btn-sm" href="/api/admin/users/export">Download all phone numbers (CSV)</a></div>
-      {(!usingSupabase || !(msg91Enabled || firebaseEnabled)) && (
+      {(!usingSupabase || !(msg91Enabled || msg91WidgetEnabled || firebaseEnabled)) && (
         <p className="notice notice-warn" style={{ marginBottom: 20 }}>
-          Setup: {!usingSupabase && 'running on local JSON storage (add Supabase keys before going live). '}{!(msg91Enabled || firebaseEnabled) && 'OTP is in dev mode (add MSG91 or Firebase keys to send real SMS).'}
+          Setup: {!usingSupabase && 'running on local JSON storage (add Supabase keys before going live). '}{!(msg91Enabled || msg91WidgetEnabled || firebaseEnabled) && 'OTP is in dev mode (add MSG91 or Firebase keys to send real SMS).'}
         </p>
       )}
       <div className="stats">
