@@ -20,19 +20,19 @@ export const TypeIcon = ({ type, size = 26 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{ICONS[type] || ICONS.room}</svg>
 );
 
-export default function PropertyCard({ p, showStatus = false }) {
+export default function PropertyCard({ p, showStatus = false, grid = false }) {
   const city = cityBySlug(p.city);
   const img = p.images?.[0]?.url;
   const t = typeByValue(p.listing_type);
   return (
-    <Link href={`/property/${p.slug}`} className={`lcard t-${p.listing_type}`}>
+    <Link href={`/property/${p.slug}`} className={`lcard t-${p.listing_type}${grid ? ' lcard-grid' : ''}`}>
       <div className="lthumb-wrap">
         {img
           // eslint-disable-next-line @next/next/no-img-element
           ? <img className="lthumb" src={img} alt={`${headline(p)} in ${p.locality}, ${city?.name}`} loading="lazy" width="104" height="104" />
           : <Scene kind={p.listing_type} uid={p.id} />}
       </div>
-      <div style={{ minWidth: 0 }}>
+      <div className="lbody" style={{ minWidth: 0 }}>
         <div className="row between" style={{ gap: 8, alignItems: 'flex-start', flexWrap: 'nowrap' }}>
           <div style={{ minWidth: 0 }}>
             <span className="ltype">{p.listing_type === 'flatmate' ? 'Flatmate wanted' : t?.label}</span>

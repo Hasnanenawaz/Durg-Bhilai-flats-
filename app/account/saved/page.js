@@ -15,7 +15,7 @@ export default async function Saved() {
       <div className="dash-head"><div><span className="eyebrow">Account</span><h1>Saved places</h1></div></div>
       <AccountTabs current="/account/saved" />
       {props.length ? <div className="listings cols-2">{props.map((p) => <PropertyCard key={p.id} p={p} />)}</div>
-        : <div className="empty"><h3>No saved places yet</h3><p>Tap “♡ Save” on any listing to shortlist it here.</p><Link className="btn btn-primary btn-sm" href="/search">Find a place</Link></div>}
+        : <div className="empty"><h3>No saved places yet</h3><p>Tap “♡ Save” on any listing to shortlist it here.</p><Link className="btn btn-primary btn-sm" href="/properties">Find a place</Link></div>}
     </div>
   );
 }

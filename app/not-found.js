@@ -5,7 +5,7 @@ export default function NotFound() {
       <span className="eyebrow">404</span>
       <h1 style={{ fontSize: '2rem' }}>This page has moved out</h1>
       <p className="muted">The listing may have been rented or removed.</p>
-      <div className="row" style={{ justifyContent: 'center' }}><Link className="btn btn-primary" href="/search">Find a place</Link><Link className="btn btn-ghost" href="/">Home</Link></div>
+      <div className="row" style={{ justifyContent: 'center' }}><Link className="btn btn-primary" href="/properties">Find a place</Link><Link className="btn btn-ghost" href="/">Home</Link></div>
     </div>
   );
 }

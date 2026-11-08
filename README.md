@@ -50,6 +50,15 @@ Without Supabase and Firebase keys the site runs in **local mode**: data is save
 
 No Firebase secret is needed on the server: the site checks the login token against Google's public keys.
 
+### Google Places (search box suggestions, optional)
+Without a key the search box suggests from our own list of areas in `lib/locations.js`, so the site works either way.
+1. In Google Cloud Console, enable **Places API (New)** and turn on billing.
+2. Create an API key. Under **API restrictions** allow only Places API (New). It can't have a website restriction, because the server makes the calls.
+3. Under **Quotas**, set a daily limit on Autocomplete and Place Details requests. This is the real spending limit.
+4. Add it as `GOOGLE_PLACES_API_KEY` in Vercel and redeploy.
+
+To test without Google: `SESSION_SECRET=<random 16+ chars> GOOGLE_PLACES_API_KEY=test GOOGLE_PLACES_API_URL=http://localhost:4993 npm start`, then `node tests/places.mjs`.
+
 ### 2b. MSG91 (OTP SMS, replaces Firebase when set)
 1. Complete DLT registration, then in MSG91 go to **OTP → Templates → Add template**. Use `##OTP##` where the code goes, and copy the template ID.
 2. Create an authkey under **Authkey** in the MSG91 panel. Vercel's server IPs change, so turn off IP security for this key if requests are rejected.
@@ -96,6 +105,9 @@ lib/
   auth.js, session.js   login sessions (signed cookie, 30 days)
   otp.js                Firebase token check + dev OTP
   models.js             listing rules, search, rent stats
+  search-parse.js       reads typed searches, also runs in the browser
+  search.js             runs a search and picks the result state
+  places.js             Google Places, server only
   locations.js          Chhattisgarh cities, localities, landmarks
 supabase/schema.sql     database setup
 scripts/seed.mjs        starter content
@@ -108,6 +120,7 @@ tests/smoke.mjs         end-to-end test (71 checks)
 npm run build
 ALLOW_DEV_OTP=true ADMIN_PHONES=9876543210 ADMIN_PASSCODE=smoke-passcode npm start
 node tests/smoke.mjs
+node tests/search-parse.mjs     # no server needed
 ```
 
 Before launch, have the Privacy Policy and Terms pages reviewed by a lawyer, and remove any demo listings.

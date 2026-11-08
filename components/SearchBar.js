@@ -2,7 +2,7 @@ import { CITIES, LISTING_TYPES } from '@/lib/locations';
 
 export default function SearchBar({ city = 'bhilai', type = '', q = '' }) {
   return (
-    <form className="searchbar" action="/search" method="get" role="search">
+    <form className="searchbar" action="/properties" method="get" role="search">
       <label className="sr-only" htmlFor="sb-city">City</label>
       <select id="sb-city" name="city" className="input" defaultValue={city}>
         <option value="">All Chhattisgarh</option>

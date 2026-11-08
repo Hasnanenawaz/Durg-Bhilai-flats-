@@ -34,7 +34,7 @@ const orgLd = {
     },
     {
       '@type': 'WebSite', '@id': abs('/#website'), url: SITE_URL, name: SITE_NAME, inLanguage: 'en-IN', publisher: { '@id': abs('/#org') },
-      potentialAction: { '@type': 'SearchAction', target: { '@type': 'EntryPoint', urlTemplate: abs('/search?q={search_term_string}') }, 'query-input': 'required name=search_term_string' },
+      potentialAction: { '@type': 'SearchAction', target: { '@type': 'EntryPoint', urlTemplate: abs('/properties?q={search_term_string}') }, 'query-input': 'required name=search_term_string' },
     },
   ],
 };

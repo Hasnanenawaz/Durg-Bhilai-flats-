@@ -13,6 +13,10 @@ const nextConfig = {
   experimental: { serverActions: { bodySizeLimit: '8mb' } },
   // lib/og.js reads these at request time; the tracer can't see its built-up paths, so ship them explicitly.
   outputFileTracingIncludes: { '/**/opengraph-image': ['./assets/fonts/*.woff', './public/logo-mark.png'] },
+  // The results page moved. Query strings carry over, so old links and bookmarks keep working.
+  async redirects() {
+    return [{ source: '/search', destination: '/properties', permanent: true }];
+  },
   async headers() {
     return [{
       source: '/(.*)',

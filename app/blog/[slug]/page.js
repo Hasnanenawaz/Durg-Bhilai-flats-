@@ -75,7 +75,7 @@ export default async function Post({ params }) {
       </article>
       <div className="cta-band" style={{ marginTop: 48 }}>
         <div><h2>Looking for a place{city ? ` in ${city.name}` : ''}?</h2><p>Owner-listed flats, PGs and rooms. Call directly. ₹0 brokerage.</p></div>
-        <Link className="btn btn-primary btn-lg" href={city ? `/rent/${city.slug}` : '/search'}>Find a place</Link>
+        <Link className="btn btn-primary btn-lg" href={city ? `/rent/${city.slug}` : '/properties'}>Find a place</Link>
       </div>
       {listings.length > 0 && (
         <section style={{ marginTop: 40 }}>

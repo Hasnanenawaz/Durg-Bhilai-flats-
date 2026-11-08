@@ -13,7 +13,7 @@ export default function ModeSwitch({ mode }) {
     const r = await fetch('/api/me', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ active_mode: m }) });
     setBusy(false);
     if (!r.ok) return setCur(cur);
-    router.push(m === 'host' ? '/host' : '/search');
+    router.push(m === 'host' ? '/host' : '/properties');
     router.refresh();
   }
   return (

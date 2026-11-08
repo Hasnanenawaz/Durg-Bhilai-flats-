@@ -28,7 +28,7 @@ const guest = client(), host = client(), admin = client(), anon = client();
 const gp = '9' + String(Date.now()).slice(-9), hp = '8' + String(Date.now() + 7).slice(-9);
 
 console.log('Public pages');
-for (const p of ['/', '/search', '/search?city=bhilai&type=pg', '/rent/bhilai', '/rent/durg/flats', '/rent/bhilai/pg', '/near/iit-bhilai', '/blog', '/blog/pg-vs-flat-in-bhilai-for-students', '/list-your-property', '/about', '/faq', '/privacy', '/terms', '/login', '/sitemap.xml', '/robots.txt', '/llms.txt', '/opengraph-image', '/manifest.webmanifest']) {
+for (const p of ['/', '/properties', '/properties?city=bhilai&type=pg', '/rent/bhilai', '/rent/durg/flats', '/rent/bhilai/pg', '/near/iit-bhilai', '/blog', '/blog/pg-vs-flat-in-bhilai-for-students', '/list-your-property', '/about', '/faq', '/privacy', '/terms', '/login', '/sitemap.xml', '/robots.txt', '/llms.txt', '/opengraph-image', '/manifest.webmanifest']) {
   const r = await anon(p);
   ok(r.status === 200, `${p} → 200`, `got ${r.status}`);
 }
@@ -86,9 +86,9 @@ ok(pub.includes('Smoke test PG') && !pub.includes(hp) && !pub.includes('Secret h
 ok(pub.includes('application/ld+json') && pub.includes('"priceCurrency":"INR"'), 'listing has Offer structured data');
 
 console.log('Guest flow');
-const s1 = await (await guest('/search?city=bhilai&type=pg&q=supela')).text();
+const s1 = await (await guest('/properties?location=Supela&city=bhilai&type=pg')).text();
 ok(s1.includes('Smoke test PG'), 'search finds listing by city/type/area');
-ok(!(await (await guest('/search?city=bhilai&type=pg&max=5000')).text()).includes('Smoke test PG'), 'rent filter excludes it');
+ok(!(await (await guest('/properties?location=Supela&city=bhilai&type=pg&max=5000')).text()).includes('Smoke test PG'), 'rent filter excludes it');
 ok((await anon(`/api/properties/${cp.id}/contact`, { method: 'POST', body: '{}' })).status === 401, 'contact needs login');
 const contact = await (await guest(`/api/properties/${cp.id}/contact`, { method: 'POST', body: '{}' })).json();
 ok(contact.phone === hp, 'logged-in guest sees owner number');
@@ -165,7 +165,7 @@ ok(home.includes('lang="en-IN"') && home.includes('geo.region'), 'en-IN + geo me
 const city = await (await anon('/rent/bhilai')).text();
 ok(city.includes('rel="canonical"') && city.includes('BreadcrumbList') && city.includes('class="answer"'), 'city page: canonical, breadcrumbs, answer box');
 ok((await (await anon('/robots.txt')).text()).includes('GPTBot'), 'robots allows AI crawlers');
-ok((await (await anon('/sitemap.xml')).text()).includes('/rent/bhilai/pg'), 'sitemap has city/type pages');
+ok((await (await anon('/sitemap/pages.xml')).text()).includes('/rent/bhilai/pg'), 'sitemap has city/type pages');
 
 console.log('Cleanup');
 ok((await host(`/api/properties/${cp.id}`, { method: 'DELETE' })).status === 200, 'host deletes listing');

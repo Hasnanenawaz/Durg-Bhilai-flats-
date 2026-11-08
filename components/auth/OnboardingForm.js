@@ -14,7 +14,7 @@ export default function OnboardingForm({ next, initialMode }) {
     setBusy(true);
     const r = await fetch('/api/me', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, active_mode: mode, signup_city: city }) });
     if (!r.ok) { setBusy(false); return setError((await r.json()).error); }
-    window.location.href = next && next !== '/' ? next : mode === 'host' ? '/host/new' : `/search?city=${city}`;
+    window.location.href = next && next !== '/' ? next : mode === 'host' ? '/host/new' : `/properties?city=${city}`;
   }
   return (
     <form onSubmit={submit} className="stack">

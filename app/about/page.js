@@ -18,7 +18,7 @@ export default function About() {
         </ul>
         <p>We started with Durg and Bhilai and now cover Raipur, Bilaspur and the rest of Chhattisgarh.</p>
       </div>
-      <div className="row" style={{ marginTop: 28 }}><Link className="btn btn-primary" href="/search">Find a place</Link><Link className="btn btn-ghost" href="/list-your-property">List your place free</Link></div>
+      <div className="row" style={{ marginTop: 28 }}><Link className="btn btn-primary" href="/properties">Find a place</Link><Link className="btn btn-ghost" href="/list-your-property">List your place free</Link></div>
     </div>
   );
 }

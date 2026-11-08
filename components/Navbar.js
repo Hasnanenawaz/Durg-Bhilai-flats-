@@ -55,7 +55,7 @@ export default function Navbar({ user }) {
   useEffect(() => { document.body.style.overflow = drawer ? 'hidden' : ''; }, [drawer]);
 
   const active = (h) => (h === '/' ? path === '/' : path === h || path.startsWith(h + '/'));
-  const typeActive = (t) => (path === '/search' && qtype === t) || path.endsWith(`/${{ flat: 'flats', pg: 'pg', room: 'rooms', flatmate: 'flatmates' }[t]}`);
+  const typeActive = (t) => (path === '/properties' && qtype === t) || path.endsWith(`/${{ flat: 'flats', pg: 'pg', room: 'rooms', flatmate: 'flatmates' }[t]}`);
   const listHref = user ? '/host/new' : '/list-your-property';
   const accountHref = host ? '/host' : '/account';
   const initial = (user?.name || 'U').trim()[0]?.toUpperCase();
@@ -70,7 +70,7 @@ export default function Navbar({ user }) {
           <nav className="nav-desktop" aria-label="Main">
             <Link className="nav-link" href="/" aria-current={active('/') ? 'page' : undefined}>Home</Link>
             {TYPES.map(([t, l]) => (
-              <Link key={t} className="nav-link" href={`/search?type=${t}`} aria-current={typeActive(t) ? 'page' : undefined}>{l}</Link>
+              <Link key={t} className="nav-link" href={`/properties?type=${t}`} aria-current={typeActive(t) ? 'page' : undefined}>{l}</Link>
             ))}
             <div className="nav-drop">
               <button type="button" className="nav-link" aria-expanded={menu === 'cities'} aria-haspopup="true" onClick={(e) => { e.stopPropagation(); setMenu(menu === 'cities' ? null : 'cities'); }} data-active={active('/rent') || active('/near') ? '' : undefined}>
@@ -130,10 +130,10 @@ export default function Navbar({ user }) {
         </div>
         {user?.name && <div className="drawer-mode"><span className="xs muted">I’m here to</span><ModeSwitch mode={user.mode} /></div>}
         <div className="drawer-types">
-          {TYPES.map(([t, l]) => <Link key={t} href={`/search?type=${t}`} className={`t-${t}`}><i className={`dot t-${t}`} />{l}</Link>)}
+          {TYPES.map(([t, l]) => <Link key={t} href={`/properties?type=${t}`} className={`t-${t}`}><i className={`dot t-${t}`} />{l}</Link>)}
         </div>
         <nav className="drawer-links">
-          <Link href="/search"><Svg name="search" size={19} /> Find a place</Link>
+          <Link href="/properties"><Svg name="search" size={19} /> Find a place</Link>
           <Link href={listHref}><Svg name="plus" size={19} /> List your place free</Link>
           <Link href="/blog"><Svg name="list" size={19} /> Renting guides</Link>
           {user && <Link href="/account/saved"><Svg name="heart" size={19} /> Saved places</Link>}
@@ -152,7 +152,7 @@ export default function Navbar({ user }) {
 
       <nav className="tabbar" aria-label="Quick navigation">
         <Link href="/" aria-current={active('/') ? 'page' : undefined}><Svg name="home" /><span>Home</span></Link>
-        <Link href="/search" aria-current={active('/search') || active('/rent') ? 'page' : undefined}><Svg name="search" /><span>Search</span></Link>
+        <Link href="/properties" aria-current={active('/properties') || active('/rent') ? 'page' : undefined}><Svg name="search" /><span>Search</span></Link>
         <Link href={listHref} className="tabbar-cta" aria-current={active('/host/new') ? 'page' : undefined}><span className="tabbar-plus"><Svg name="plus" size={24} /></span><span>List free</span></Link>
         <Link href={user ? '/account/saved' : '/login?next=/account/saved'} aria-current={active('/account/saved') ? 'page' : undefined}><Svg name="heart" /><span>Saved</span></Link>
         <Link href={user ? accountHref : '/login'} aria-current={(active('/account') && !active('/account/saved')) || (active('/host') && !active('/host/new')) ? 'page' : undefined}><Svg name="user" /><span>{user ? 'Me' : 'Log in'}</span></Link>

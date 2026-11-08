@@ -2,7 +2,7 @@ import { abs, SITE_URL } from '@/lib/site';
 
 // AI crawlers are welcome on public pages so the site can be cited by ChatGPT, Perplexity, Gemini and Claude (GEO).
 export default function robots() {
-  const disallow = ['/admin', '/host', '/account', '/api/', '/login', '/onboarding', '/search?'];
+  const disallow = ['/admin', '/host', '/account', '/api/', '/login', '/onboarding', '/search?', '/properties?'];
   return {
     rules: [
       { userAgent: '*', allow: '/', disallow },

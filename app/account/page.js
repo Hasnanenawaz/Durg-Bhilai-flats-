@@ -30,7 +30,7 @@ export default async function Account() {
               <div>{byId[a.property_id] ? <Link href={`/property/${byId[a.property_id].slug}`}>{a.property_title}</Link> : a.property_title}</div>
               <span className="xs muted">{relTime(a.created_at)}</span>
             </div>
-          )) : <div className="panel-body"><p className="muted small" style={{ margin: 0 }}>Nothing yet. <Link href="/search">Find a place</Link> and tap “Show owner’s number”.</p></div>}
+          )) : <div className="panel-body"><p className="muted small" style={{ margin: 0 }}>Nothing yet. <Link href="/properties">Find a place</Link> and tap “Show owner’s number”.</p></div>}
         </section>
       </div>
       {!user.is_host && (

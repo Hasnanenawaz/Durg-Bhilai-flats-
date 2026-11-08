@@ -86,7 +86,7 @@ export default async function Home() {
         <span className="eyebrow reveal">Durg · Bhilai · Chhattisgarh</span>
         <h1 className="reveal d1">Find your <RotatingWord words={WORDS} /> in <span className="y">Durg-Bhilai</span></h1>
         <p className="lead reveal d2">Flats, PGs, rooms and flatmates listed straight by owners. Call them directly and keep your money: <b style={{ color: '#fff' }}>₹0 brokerage.</b></p>
-        <div className="reveal d3"><HeroSearch cities={CITIES} /></div>
+        <div className="reveal d3"><HeroSearch /></div>
         <div className="hero-trust reveal d3">
           <span><i>✓</i> No broker, ever</span>
           <span><i>✓</i> OTP-verified owners</span>
@@ -98,7 +98,7 @@ export default async function Home() {
         <div className="wrap">
           <div className="cat-grid reveal reveal-stagger">
             {CATS.map((c) => (
-              <Link key={c.v} href={`/search?type=${c.v}`} className={`cat-card t-${c.v}`}>
+              <Link key={c.v} href={`/properties?type=${c.v}`} className={`cat-card t-${c.v}`}>
                 <div className="cat-art">
                   <Scene kind={c.v} uid={`cat-${c.v}`} />
                   {perType[c.v] > 0 && <span className="cat-count">{perType[c.v]} live</span>}
@@ -131,7 +131,7 @@ export default async function Home() {
           </div>
           <div className="reveal d1">
             <Tabs variant="segment" className="tabs-center" tabs={[
-              { id: 'guest', label: '🏠 I’m looking for a place', content: <Steps items={GUEST_STEPS} cta={<Link className="btn btn-primary btn-lg" href="/search">Find a place</Link>} /> },
+              { id: 'guest', label: '🏠 I’m looking for a place', content: <Steps items={GUEST_STEPS} cta={<Link className="btn btn-primary btn-lg" href="/properties">Find a place</Link>} /> },
               { id: 'host', label: '🔑 I own a place', content: <Steps items={HOST_STEPS} cta={<Link className="btn btn-amber btn-lg" href="/list-your-property">List your place free</Link>} /> },
             ]} />
           </div>
@@ -155,7 +155,7 @@ export default async function Home() {
         <div className="wrap">
           <div className="row between reveal" style={{ marginBottom: 18 }}>
             <div><span className="eyebrow">Fresh today</span><h2 style={{ margin: 0 }}>Just listed</h2></div>
-            <Link href="/search" className="btn btn-ghost btn-sm">See all listings →</Link>
+            <Link href="/properties" className="btn btn-ghost btn-sm">See all listings →</Link>
           </div>
           <div className="reveal d1"><Tabs tabs={listingTabs} /></div>
         </div>

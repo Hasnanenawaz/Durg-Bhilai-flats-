@@ -1,17 +1,22 @@
 import { CITIES, LISTING_TYPES, TENANT_PREFS, FURNISHING, BHK, cityBySlug } from '@/lib/locations';
 
-export default function Filters({ f, action = '/search', lockCity = false, lockType = false }) {
+/**
+ * simple: the results page, where the search box already sets the place, so city and area text are left out.
+ * hidden: values to send along untouched. localities: offers an area dropdown. clearHref: where "Clear filters" goes.
+ */
+export default function Filters({ f, action = '/properties', lockCity = false, lockType = false, simple = false, hidden = {}, localities, clearHref }) {
   const city = cityBySlug(f.city);
   return (
     <form className="filters" action={action} method="get" aria-label="Filter listings">
-      {lockCity ? <input type="hidden" name="city" value={f.city} /> : (
+      {Object.entries(hidden).filter(([, v]) => v).map(([k, v]) => <input key={k} type="hidden" name={k} value={v} />)}
+      {!simple && (lockCity ? <input type="hidden" name="city" value={f.city} /> : (
         <label className="field"><span>City</span>
           <select name="city" className="input" defaultValue={f.city || ''}>
             <option value="">All Chhattisgarh</option>
             {CITIES.map((c) => <option key={c.slug} value={c.slug}>{c.name}</option>)}
           </select>
         </label>
-      )}
+      ))}
       {lockType ? <input type="hidden" name="type" value={f.type} /> : (
         <label className="field"><span>Type</span>
           <select name="type" className="input" defaultValue={f.type || ''}>
@@ -20,10 +25,20 @@ export default function Filters({ f, action = '/search', lockCity = false, lockT
           </select>
         </label>
       )}
+      {simple && localities?.length > 0 && (
+        <label className="field"><span>Area</span>
+          <select name="locality" className="input" defaultValue={f.locality || ''}>
+            <option value="">All areas</option>
+            {localities.map((l) => <option key={l}>{l}</option>)}
+          </select>
+        </label>
+      )}
+      {!simple && (
       <label className="field"><span>Area or landmark</span>
         <input name="q" className="input" defaultValue={f.q || ''} list="loc-list" placeholder="e.g. Supela" />
         <datalist id="loc-list">{(city ? city.localities : CITIES.flatMap((c) => c.localities)).map((l) => <option key={l} value={l} />)}</datalist>
       </label>
+      )}
       <div className="field"><span className="label">Rent per month (₹)</span>
         <div className="row" style={{ gap: 8, flexWrap: 'nowrap' }}>
           <input name="min" className="input" inputMode="numeric" placeholder="Min" defaultValue={f.min || ''} aria-label="Minimum rent" />
@@ -56,7 +71,7 @@ export default function Filters({ f, action = '/search', lockCity = false, lockT
         </select>
       </label>
       <button className="btn btn-primary btn-block" type="submit" style={{ marginTop: 16 }}>Show places</button>
-      <a href={action} className="small muted" style={{ display: 'block', textAlign: 'center', marginTop: 10 }}>Clear filters</a>
+      <a href={clearHref || action} className="small muted" style={{ display: 'block', textAlign: 'center', marginTop: 10 }}>Clear filters</a>
     </form>
   );
 }
