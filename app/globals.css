@@ -357,6 +357,8 @@ textarea.input { min-height: 120px; resize: vertical; }
 /* ── Stats ── */
 .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
 @media (min-width: 760px) { .stats { grid-template-columns: repeat(4, 1fr); } }
+.stats-5 > .stat:first-child { grid-column: 1 / -1; }
+@media (min-width: 1000px) { .stats.stats-5 { grid-template-columns: repeat(5, 1fr); } .stats-5 > .stat:first-child { grid-column: auto; } }
 .stat { position: relative; overflow: hidden; background: var(--tcs, #fff); border: 1px solid color-mix(in srgb, var(--tc, var(--line)) 20%, transparent); border-radius: var(--radius); padding: 20px; transition: transform .3s var(--ease), box-shadow .3s; }
 .stat:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
 .stat b { display: block; font-family: var(--font-head); font-size: 2rem; font-weight: 800; letter-spacing: -.03em; line-height: 1.1; color: var(--tc, var(--ink)); }
