@@ -53,11 +53,10 @@ function Steps({ items, cta }) {
 }
 
 export default async function Home() {
-  const [recent, all, posts, userCount] = await Promise.all([
+  const [recent, all, posts] = await Promise.all([
     db.find('properties', { eq: { status: 'approved' }, order: ['created_at', false], limit: 40 }),
     db.find('properties', { eq: { status: 'approved' }, limit: 2000 }),
     db.find('blogs', { eq: { status: 'published' }, order: ['published_at', false], limit: 3 }),
-    db.count('users').catch(() => 0),
   ]);
   const perCity = {};
   const perType = {};
@@ -142,8 +141,8 @@ export default async function Home() {
       {live > 0 && (
         <section className="band-navy section-tight" style={{ padding: '44px 0' }}>
           <div className="wrap">
-            <div className={`stats reveal reveal-stagger${userCount > 0 ? ' stats-5' : ''}`}>
-              {userCount > 0 && <div className="stat"><b><CountUp to={userCount} suffix="+" /></b><span>{userCount === 1 ? 'registered user' : 'registered users'}</span></div>}
+            <div className="stats reveal reveal-stagger stats-5">
+              <div className="stat"><b><CountUp to={199} suffix="+" duration={2200} /></b><span>active users</span></div>
               <div className="stat"><b><CountUp to={live} /></b><span>live listings</span></div>
               <div className="stat"><b><CountUp to={owners} /></b><span>{owners === 1 ? 'owner' : 'owners'} listing directly</span></div>
               <div className="stat"><b><CountUp to={cityCount} /></b><span>{cityCount === 1 ? 'city' : 'cities'} in Chhattisgarh</span></div>
